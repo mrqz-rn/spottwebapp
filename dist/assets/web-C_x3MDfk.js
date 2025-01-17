@@ -1,0 +1,1 @@
+import{W as e}from"./index-ygXwHGmL.js";class o extends e{async isAutoTimeEnabled(){return console.warn("isAutoTimeEnabled is not available on web"),{value:!1}}async isAutoTimeZoneEnabled(){return console.warn("isAutoTimeZoneEnabled is not available on web"),{value:!1}}}export{o as DatetimeSettingWeb};

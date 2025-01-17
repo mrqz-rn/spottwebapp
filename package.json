@@ -1,0 +1,53 @@
+{
+  "name": "SPOTT_V2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "serve": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:e2e": "cypress run",
+    "test:unit": "vitest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@capacitor/android": "6.1.0",
+    "@capacitor/app": "6.0.0",
+    "@capacitor/browser": "^6.0.2",
+    "@capacitor/camera": "6.1.2",
+    "@capacitor/core": "6.2.0",
+    "@capacitor/device": "^6.0.0",
+    "@capacitor/geolocation": "6.1.0",
+    "@capacitor/network": "6.0.3",
+    "@ionic/storage": "^4.0.0",
+    "@ionic/vue": "^8.2.5",
+    "@ionic/vue-router": "^8.0.0",
+    "axios": "^0.21.1",
+    "capacitor-datetime-setting": "^0.0.1",
+    "idb": "^8.0.0",
+    "ionicons": "^7.0.0",
+    "is-base64": "^1.1.0",
+    "md5": "^2.3.0",
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0",
+    "vuetify": "^3.6.14",
+    "vuex": "^4.0.2",
+    "webpack-plugin-vuetify": "^3.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "6.1.0",
+    "@vitejs/plugin-legacy": "^5.0.0",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/test-utils": "^2.3.0",
+    "cypress": "^13.5.0",
+    "eslint": "^8.35.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "jsdom": "^22.1.0",
+    "terser": "^5.31.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.0.0",
+    "vitest": "^0.34.6"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "SPOTT-V2",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite",
+  "server": {
+    "localHttps": false,
+    "localPort": 8100
+  }
+}

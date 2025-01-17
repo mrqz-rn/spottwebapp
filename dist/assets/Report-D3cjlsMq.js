@@ -1,0 +1,1 @@
+import{_ as e,I as t,c as s,w as a,r as n,o as c,a as r}from"./index-ygXwHGmL.js";const _={components:{IonPage:t}},p=r("div",{style:{color:"black"}}," test report ",-1);function l(d,f,i,m,u,x){const o=n("IonPage");return c(),s(o,null,{default:a(()=>[p]),_:1})}const $=e(_,[["render",l]]);export{$ as default};
