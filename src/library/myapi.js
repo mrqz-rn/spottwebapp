@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { CapacitorHttp } from '@capacitor/core';
 
-const API_URL = 'http://209.2.5.40/spott-api'; // localhost
+const API_URL = '/spott-api';
 const DB_NAME = 'spottdb';
 const API_TOKEN = 'U1BPVFRUT0tFTg=='
 

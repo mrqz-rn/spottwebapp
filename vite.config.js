@@ -4,10 +4,18 @@ import path from 'path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // base: '/main/',  // PRODUCTION
-  base: '/', // DEVELOPMENT
+  server: {
+    proxy: {
+      '/spott-api': {
+        target: 'http://209.2.5.40',  // Your HTTP API URL
+        changeOrigin: true,           // Needed for virtual hosted sites
+        rewrite: (path) => path.replace(/^\/spott-api/, '/spott-api'),  // Optionally rewrite the path
+      },
+    },
+  },
+  base: '/', 
   build: {
-    outDir: 'dist', // Make sure this is where you expect your assets to be
+    outDir: 'dist', 
     assetsDir: 'assets',
   },
   optimizeDeps: {
