@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/spott-api/:path*",
+        "destination": "http://209.2.5.40/spott-api/:path*"
+      }
+    ]
+  }
+  
