@@ -75,13 +75,13 @@ export default {
     methods: {
         async checkUser(data){
             let res = await this.$api.masterselect({
-                table_name: 'spottv2.users_view',
+                table_name: 'users_view',
                 having: {
                     username: data.username
                 }
             })
             await this.$api.savedata({
-                tableName: 'spottv2.user_config',
+                tableName: 'user_config',
                 fields: {
                     userID: res[0].ID,
                     updateConfig: 0,
@@ -93,7 +93,7 @@ export default {
         },
         async checkAppConfig(data){
             let res = await this.$api.masterselect({
-                table_name: 'spottv2.app_config',
+                table_name: 'app_config',
             })
             return res[0]
         }

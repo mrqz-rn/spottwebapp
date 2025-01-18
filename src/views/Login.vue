@@ -105,7 +105,7 @@ export default {
         async register() {
 
             let res = await this.$api.savedata({
-                tableName: 'spottv2.device_registered', 
+                tableName: 'device_registered', 
                 fields: {
                     userID: this.log_response.data.ID,
                     device: this.device

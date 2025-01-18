@@ -94,7 +94,6 @@ export default {
                 type: 1,
                 model: `${new Date().toLocaleDateString('en-CA')}T00:00:00`,
             },
-            btnvalid: true,
             trxmodetype: 0,
             background_count: 0,
             location_bk: {
@@ -136,7 +135,7 @@ export default {
     methods: {
         async getLogs(){
             let res = await this.$api.masterselect({
-                table_name: `spottv2.${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
+                table_name: `${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
                 having: {
                     userID: this.session_user.ID
                 }
@@ -149,15 +148,14 @@ export default {
                 this.$router.push('/')
             }
             let attlogs = await this.$function.getAttlogs()
+            if(attlogs[0] == null){ attlogs.shift(); }
+
             if(attlogs.length == 0){
                 await this.getLogs()
-                console.log('call')
             }else{
                 attlogs.filter(e => e.trxdate >= this.current.datefrom)
                 this.$storage.setItem('session-attlogs', (attlogs))
-                console.log('else')
             }
-
             this.attlogs = await this.$function.getAttlogs()
             this.user_location = await this.$function.UserLocation()
             this.snackbar.status = true
@@ -186,7 +184,7 @@ export default {
         async fetchUserLocations(){
             let location = []
             let res = await this.$api.masterselect({
-                table_name: 'spottv2.user_loc_view',
+                table_name: 'user_loc_view',
                 having: {
                     username: this.session_user.username
                 }
@@ -215,12 +213,12 @@ export default {
                 }
                 if(res.status == false){
                     this.$function.showAlert({header: 'Warning', message: res.message})
-                    return
+                    return await loading.dismiss();
                 }
                 let location_valid = this.checkIfWithinLocation(this.location.longitude,this.location.latitude)
                 if(!location_valid){
                     this.$function.showAlert({header: 'Warning', message: 'You are not within the allowed locations.'})
-                    return
+                    return await loading.dismiss();
                 }
                 let photo = await this.openCamera()
                 if(!photo.status){
@@ -233,7 +231,6 @@ export default {
                 data_log.id = this.$function.generateUniqueId()
                 data_log.trxdate = this.current.date;
                 data_log.username = this.session_user.username;
-                data_log.trxdate = new Date().toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }),
                 data_log.trxtime = this.current.time;
                 data_log.trxmode = this.trxmodetype;
                 data_log.timestamp = String(new Date());
@@ -254,7 +251,6 @@ export default {
                         base64data: photo.base64String.replace('data:image/jpeg;base64,', '')
                     }
                     let upload = await this.$api.fileUpload(config)
-                    console.log(upload)
                     if(upload.status == true){
                         data_log.picture = "UPLOADED"
                         data_log.fileName = upload.file_name
@@ -283,7 +279,7 @@ export default {
         },
         async savetoserver(data_log){
             let check = await this.$api.masterselect({
-                table_name: `spottv2.${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
+                table_name: `${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
                 having: {
                     userID: this.session_user.ID,
                     trxdate: data_log.trxdate,
@@ -292,7 +288,7 @@ export default {
                 }
             })
             let res = await this.$api.savedata({
-                tableName: `spottv2.${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
+                tableName: `${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
                 fields: {
                     userID: this.session_user.ID,
                     trxdate: data_log.trxdate,
@@ -326,7 +322,6 @@ export default {
                             e.upload_status = 1
                             e.uploaded_on = new Date().toLocaleString('en-CA')
                             this.$storage.updateAttlogs(e)
-                            console.log(e)
                         }
                     });   
                     await loading.dismiss();
@@ -338,7 +333,6 @@ export default {
             } catch (error) {
                 await loading.dismiss();
                 this.$function.showAlert({header: 'Warning', message: error})
-
                 console.log(error)
             }
         },
@@ -411,6 +405,9 @@ export default {
         },
     },
     computed: {
+        btnvalid(){
+            return this.location_bk.status 
+        },
         transferbtn(){
             let logs = this.attlogs
             return logs.filter(e => e.upload_status == '0').length > 0
@@ -435,7 +432,6 @@ export default {
         display_attlogs(){
             const attlogs = this.attlogs.filter(e => new Date(e.trxdate) >= new Date(this.$function.defaultDateFormat(this.display.datefrom)) && 
             new Date(e.trxdate) <= new Date(this.$function.defaultDateFormat(this.display.dateto)));
-
             if(attlogs.length == 0) return []
             let result = [], setTrx = {}
             attlogs.forEach((t, i) => {
@@ -459,7 +455,6 @@ export default {
             if (this.background_count > 0) {
                 let location = await this.$function.getLocation()
                 if(location.status == true){ this.location_bk = location }
-                // console.log(location)
                 setTimeout(() => {
                     this.background_count++
                 }, 10000);

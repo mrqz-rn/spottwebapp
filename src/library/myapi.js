@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { CapacitorHttp } from '@capacitor/core';
 
-const API_URL = 'http://209.2.5.40/spott-api'; // localhost
-const DB_NAME = 'spottdb';
+// const API_URL = 'https://ronmarquez.serv00.net/spott-api';
+// const DB_NAME = 'm10857_spottv2';
+const API_URL = 'http://localhost/spott-api';
+const DB_NAME = 'spottv2';
 const API_TOKEN = 'U1BPVFRUT0tFTg=='
 
 
@@ -40,7 +42,7 @@ const MyApi = {
                 url:`${API_URL}/admin/crud`,
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 data: new URLSearchParams({
-                  tableName: `${userData.tableName}`,
+                  tableName: `${DB_NAME}.${userData.tableName}`,
                   fields: JSON.stringify(userData.fields),
                   key: JSON.stringify(userData.key),
                   TOKEN: API_TOKEN
@@ -66,7 +68,7 @@ const MyApi = {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 data: {
                   TOKEN: API_TOKEN,
-                  table_name: `${userData.table_name}`,
+                  table_name: `${DB_NAME}.${userData.table_name}`,
                 }
               }
               if(userData.having){
@@ -117,6 +119,39 @@ const MyApi = {
                 throw error
               }
             },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
