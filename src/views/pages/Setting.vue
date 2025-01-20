@@ -162,6 +162,30 @@ export default {
                 this.$function.showAlert({header: 'Warning', message: 'Something went wrong. Please try again later.', buttons: ['Okay'], })
             }
         },
+        async logout(){
+            let attlogs = await this.$function.getAttlogs()
+            if(attlogs.filter(e => e.upload_status != '1').length > 0){
+                this.$function.showAlert({header: 'Warning', message: 'You have unsaved logs. Please upload before logging out.'})
+                return
+            }
+            const alert = await alertController.create({
+            header: 'Confirm',
+            message: 'Are you sure you want to logout?',
+            buttons: [ 
+            { text: 'No', role: 'cancel', handler: () => { console.log('Alert canceled') } },
+            { text: 'Yes', role: 'confirm', handler: async  () => { 
+                // await this.$storage.clearStorage(); 
+                await this.$storage.removeItem('session-location');
+                await this.$storage.removeItem('session-user');
+                await this.$storage.removeItem('session-attlogs');
+                setTimeout(() => {
+                this.$router.push('/').then(() => { window.location.reload() });
+                }, 250);
+            } },
+        ],
+        });
+        await alert.present();
+        },
         async fetchAddress() {
             this.address = await Promise.all(this.Locations.map(e => this.$api.addressapi({ latitude: e.lat, longitude: e.long })  ));
             this.$forceUpdate();

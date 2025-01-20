@@ -371,7 +371,7 @@ export default {
                 }
                 await this.localSaveAttlogs(data_log)
                 await loading.dismiss();
-
+                this.$function.showAlert({header: 'Success', message: 'DTR has been saved successfully.'})
             } catch (error) {
                 console.log(error)
                 await loading.dismiss();
