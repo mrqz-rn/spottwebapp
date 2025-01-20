@@ -77,6 +77,9 @@ const MyApi = {
               if(userData.fields){
                 options.data.fields = JSON.stringify(userData.fields)
               }
+              if(userData.order_by){
+                options.data.order_by = JSON.stringify(userData.order_by)
+              }
               options.data = new URLSearchParams(options.data).toString()
    
               
@@ -119,152 +122,26 @@ const MyApi = {
                 throw error
               }
             },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
             addressapi: async (userData) => {
+              let url = `https://nominatim.openstreetmap.org/reverse?lat=${userData.latitude}&lon=${userData.longitude}&format=json`;
+             const options = {
+               url:`${url}`,
+             }
+             
+             try {
+               const timeout = (ms) => new Promise((_, reject) =>
+                 setTimeout(() => reject(new Error('Request timed out')), ms)
+               );
+               const response = await Promise.race([
+                 CapacitorHttp.get(options),
+                 timeout(10000)
+               ])
+               return response.data;
+             } catch (error) {
+               return JSON.stringify(error);
+             }
+           },
 
-               let url = `https://nominatim.openstreetmap.org/reverse?lat=${userData.latitude}&lon=${userData.longitude}&format=json`;
-              const options = {
-                url:`${url}`,
-                
-              }
-              
-              try {
-                const timeout = (ms) => new Promise((_, reject) =>
-                  setTimeout(() => reject(new Error('Request timed out')), ms)
-                );
-                const response = await Promise.race([
-                  CapacitorHttp.get(options),
-                  timeout(10000)
-                ])
-                return response.data;
-              } catch (error) {
-                return JSON.stringify(error);
-              }
-            },
-          
-       
-     
-           
-            
-            
-            checklogin: async (userData) => {
-              const options = {
-                url:`${API_URL}/employee/checklogin`,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: new URLSearchParams({
-                  username: userData.username
-                }).toString()
-              }
-              
-              try {
-                const timeout = (ms) => new Promise((_, reject) =>
-                  setTimeout(() => reject(new Error('Request timed out')), ms)
-                );
-                const response = await Promise.race([
-                  CapacitorHttp.post(options),
-                  timeout(4000)
-                ])
-                return response.data;
-              } catch (error) {
-                throw error
-                // return JSON.stringify(error);
-              }
-            },
-         
-            uploadlog: async (userData) => {
-              const options = {
-                url:`${API_URL}/timekeeping/uploadtimelog`,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: new URLSearchParams({
-                  username: userData.username,
-                  trxdatedb: userData.trxdatedb,
-                  trxtime: userData.trxtime,
-                  longitude: userData.longitude,
-                  latitude: userData.latitude
-                }).toString()
-              }
-              
-              try {
-                const timeout = (ms) => new Promise((_, reject) =>
-                  setTimeout(() => reject(new Error('Request timed out')), ms)
-                );
-                const response = await Promise.race([
-                  CapacitorHttp.post(options),
-                  timeout(7500)
-                ])
-                return response.data;
-              } catch (error) {
-                return JSON.stringify(error);
-              }
-            },
-    
-            // fileUpload: async (userData) => {
-            //   const options = {
-            //     url:`${SWFS_URL}/employee/base64Upload`,
-            //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            //     data: new URLSearchParams({
-            //       TOKEN: 'U1dGU1RPS0VO',
-            //       path_folder: userData.path_folder,
-            //       max_size: userData.max_size,
-            //       base64data: userData.base64data,
-            //       type: 'base64'
-            //     }).toString()
-            //   }
-              
-            //   try {
-            //     const timeout = (ms) => new Promise((_, reject) =>
-            //       setTimeout(() => reject(new Error('Request timed out')), ms)
-            //     );
-            //     const response = await Promise.race([
-            //       CapacitorHttp.post(options),
-            //       timeout(7500)
-            //     ])
-            //     return response.data;   
-            //   } catch (error) {
-            //     throw error
-            //   }
-            // },
       }
     }
 };

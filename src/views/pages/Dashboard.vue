@@ -27,6 +27,7 @@
         </div>
         <ion-button @click="transferlogs()" :disabled="!transferbtn"
         class="pt-2 mx-4" expand="full" color="primary" shape="round">Transfer Logs ({{ transfercount }})</ion-button>
+        {{ current }}
         <ion-list style="min-height: 30vh; max-height: 42vh; overflow-y: scroll;">
             <ion-item v-for="(data,key) in display_attlogs" :key="key" class="py-2 ps-3">
                 <div class="" style="font-size: 16px !important; letter-spacing: .75px;">
@@ -108,7 +109,6 @@ export default {
         }
     },
     beforeCreate(){
-        let user = this.$function.getUser()
         setInterval(() => {
             this.getTimeDate();
         }, 1000);
@@ -137,8 +137,10 @@ export default {
             let res = await this.$api.masterselect({
                 table_name: `${this.session_user.isLive == '1' ? 'attlogs' : 'attlogs_test'}`,
                 having: {
-                    userID: this.session_user.ID
-                }
+                    userID: this.session_user.ID,
+                    'trxdate >=': this.current.datefrom
+                },
+                order_by: {trxdate: 'asc', trxtime: 'asc'}
             })
             await this.$storage.setItem('session-attlogs', (res))
         },
@@ -317,11 +319,13 @@ export default {
                 let hasdata = await this.$function.checknet()
                 if(net.connected && hasdata){
                     this.attlogs.forEach(async e => {
-                        let res = await this.savetoserver(e)
-                        if(res.error == 0){
-                            e.upload_status = 1
-                            e.uploaded_on = new Date().toLocaleString('en-CA')
-                            this.$storage.updateAttlogs(e)
+                        if(e.upload_status != 1){
+                            let res = await this.savetoserver(e)
+                            if(res.error == 0){
+                                e.upload_status = 1
+                                e.uploaded_on = new Date().toLocaleString('en-CA')
+                                this.$storage.updateAttlogs(e)
+                            }
                         }
                     });   
                     await loading.dismiss();
