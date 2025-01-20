@@ -17,7 +17,7 @@
             <h3 style="font-size: 2.5vh;">Position:</h3>
             <h4 class="pb-2" style="font-size: 2.2vh; color: #303030">{{ session_user.position  }}</h4>
             <h3 style="font-size: 2.5vh;">Shift Schedule:</h3>
-            <h4 class="pb-2" style="font-size: 2.2vh; color: #303030">{{  }}</h4>
+            <h4 class="pb-2" style="font-size: 2.2vh; color: #303030">{{ session_user.shiftDesc }}</h4>
           </div>
         </div>
 
@@ -74,6 +74,9 @@ export default {
     },
     async created(){
         this.session_user = await this.$function.getUser()
+        if(!this.session_user){
+            this.$router.push('/')
+        }
     },
     methods: {
         async confirmPass(){

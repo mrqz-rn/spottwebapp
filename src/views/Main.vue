@@ -1,12 +1,9 @@
 <template>
 <IonPage>
-   
     <Login v-if="app.status && !app.user"/>
-    <Update v-else-if="app.status && !app.user && app.update"/>
-    <Maintenance v-else-if="app.status && !app.user && app.maintenance"/>
+    <Update v-else-if="app.update"/>
+    <Maintenance v-else-if="app.maintenance"/>
     <Load v-else/>
-      
-   
 </IonPage>
 </template>
 
@@ -95,6 +92,7 @@ export default {
             let res = await this.$api.masterselect({
                 table_name: 'app_config',
             })
+            await this.$storage.setItem('app-config', (res[0]));
             return res[0]
         }
     }

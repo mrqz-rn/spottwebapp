@@ -5,7 +5,7 @@
       position="top" :is-open="snackbar.status"  @didDismiss="snackbar.status = false"
       :message="snackbar.message"
     ></ion-toast>
-    <ion-content> 
+    <ion-content v-if="!webCapturing"> 
         <IonCard class="py-4 mx-2" color="dark" style="border-radius: 25px;" >
             <ion-card-title class="subheader">SPOTT</ion-card-title>
             <ion-card-content class="justify-center pa-0" >
@@ -25,9 +25,8 @@
             <ion-input v-model="display.dateto" :readonly="true" @click="pickDate(2)" class="dateInput pt-2"
             label="Date To" fill="outline"  label-placement="stacked" ></ion-input>
         </div>
-        <ion-button @click="transferlogs()" :disabled="!transferbtn"
+        <ion-button @click="transferlogs()" :disabled="!transferbtn" v-if="session_user.isOffline == 1"
         class="pt-2 mx-4" expand="full" color="primary" shape="round">Transfer Logs ({{ transfercount }})</ion-button>
-        {{ current }}
         <ion-list style="min-height: 30vh; max-height: 42vh; overflow-y: scroll;">
             <ion-item v-for="(data,key) in display_attlogs" :key="key" class="py-2 ps-3">
                 <div class="" style="font-size: 16px !important; letter-spacing: .75px;">
@@ -47,12 +46,46 @@
                 </ion-button>
             </ion-item>
         </ion-list>
+        <ion-button class="open-custom-dialog" id="open-custom-dialog" expand="block" shape="round" style="display: none;"/>
+        <ion-modal id="example-modal" ref="modal1" trigger="open-custom-dialog" :can-dismiss="viewLog.canDismiss" >
+          <div class="wrapper" >
+            <h2 class="d-flex justify-center pt-2">Attendance Log</h2>
+            <div class="pa-2 px-4 d-block" >
+              <h3>Time In</h3>
+              <ion-label style="" class="px-2">
+                <span class="pe-3">Date: {{ viewLog.data.trxIN.trxdate }}</span>
+                <span class="pe-3">Time: {{ formattedTime(viewLog.data.trxIN.trxtime) }}</span>
+              </ion-label>
+              <p style="" class="px-2">Location:  {{ viewLog.data.trxIN.latitude + ' : ' + viewLog.data.trxIN.longitude }} </p>
+              <h3>Time Out</h3>
+              <ion-label style="" class="px-2">
+                <span class="pe-3">Date: {{ viewLog.data.trxOUT.trxdate || '---' }}</span>
+                <span class="pe-3">Time: {{ viewLog.data.trxOUT.trxtime ? formattedTime(viewLog.data.trxOUT.trxtime) : '---'  }}</span>
+              </ion-label>
+              <p style="" class="px-2">Location:  {{ viewLog.data.trxOUT.latitude + ' : ' + viewLog.data.trxOUT.longitude }} </p>
+              <div class="d-flex justify-space-between pt-2">
+                <h3>Remarks</h3>
+                <p style=" color: #0068d1; text-decoration: underline" @click="viewLog.inputrem = !viewLog.inputrem">Input / Edit</p>
+              </div>
+              <div v-if="viewLog.inputrem == true">
+                <ion-textarea v-model="viewLog.remark" id="remarkarea"
+                class="pt-3" label="Remarks" fill="outline"  label-placement="stacked" 
+                placeholder="(Optional)">
+                </ion-textarea>
+                <ion-button class="pt-3" expand="full" shape="round" @click="saveRemarks()">Save</ion-button> 
+              </div>
+              <p v-else style="" class="px-2" >{{ viewLog.data.trxIN.remark || '---' }}  </p>
+              <ion-button class="pt-3" expand="full" shape="round" color="medium" @click="closeModal()">Close</ion-button>
+            </div>
+          
+          </div>
+        </ion-modal>
         <ion-button id="open-date" expand="block" style="display: none;">Date modal</ion-button>
         <ion-modal id="example-modal" ref="modal" trigger="open-date"  :can-dismiss="datepick.canDismiss">
         <div class="wrapper">
             <h2 class="d-flex justify-center pt-2"></h2>
             <ion-datetime v-model="datepick.model" presentation="date" 
-            :min="datepick.type == 1 ? `` : `${new Date().toLocaleDateString('en-CA')}T00:00:00`"
+            :min="datepick.type == 1 ? `` : `${new Date(this.current.datefrom).toLocaleDateString('en-CA')}T00:00:00`"
             :max="`${new Date().toLocaleDateString('en-CA')}T23:59:59`"/>
             <div class="pa-3">
             <ion-button expand="full" class="main" shape="round" @click="confirmPick()">Confirm</ion-button>
@@ -60,6 +93,30 @@
         </div>
         </ion-modal>
     </ion-content>
+    <div v-if="webCapturing" style="position: absolute; top: 50%; transform: translateY(-50%); z-index: 1005 !important;">
+        <img v-if="webImage" style="object-fit: contain;"
+        :src="webImage" alt="Captured Image" :style="isonWeb ? ' width: 100vw !important;' : 'width: 100vw !important;'"/>
+        <video v-else ref="video" autoplay :style="isonWeb ? 'width: 100vw !important;' : 'width: 100vw !important;'"></video>
+        <div v-if="webImage" class="d-flex justify-center px-10 pt-4" style="gap: 5vw;">
+            <ion-button shape="round" @click="retakeImage" class="" color="medium">
+            <ion-icon slot="icon-only" :icon="arrowUndo" class="ma-2"></ion-icon>
+            </ion-button>
+            <ion-button shape="round" @click="saveCapture" class="" color="success" dark>
+            <ion-icon slot="icon-only" :icon="save" class="ma-2"></ion-icon>
+            </ion-button>
+            <ion-button style="opacity: 0;"></ion-button>
+        </div>
+        <div v-else class="d-flex justify-center px-10 pt-4" style="gap: 5vw;">
+            <ion-button shape="round" @click="stopCamera()" class="" color="medium">
+            <ion-icon slot="icon-only" :icon="close" class="ma-2"></ion-icon>
+            </ion-button>
+            <ion-button shape="round" @click="captureImage" class="">
+            <ion-icon slot="icon-only" :icon="camera" class="ma-2"></ion-icon>
+            </ion-button>
+            <ion-button style="opacity: 0;"></ion-button>
+        </div>
+        <canvas ref="canvas" width="640" height="480" style="display: none;"></canvas>
+    </div>
 </IonPage>
 </template>
 
@@ -77,6 +134,10 @@ export default {
     data(){
         return{
             eye, book, camera, save, close, arrowUndo,
+            isonWeb: false,
+            webCapturing: false,
+            webImage: null,
+            stream: null,
             snackbar: {status: false, type: 'success', message: 'test'},
             session_user: {},
             user_location: '',
@@ -94,6 +155,12 @@ export default {
                 canDismiss: true,
                 type: 1,
                 model: `${new Date().toLocaleDateString('en-CA')}T00:00:00`,
+            },
+            viewLog: {
+                canDismiss: true,
+                data: {},
+                remark: '',
+                inputrem: false,
             },
             trxmodetype: 0,
             background_count: 0,
@@ -123,9 +190,7 @@ export default {
         this.display.datefrom = this.$function.formatDate(date.toLocaleDateString('en-CA'))
         this.current.dateto =  new Date().toLocaleDateString('en-CA');
         this.display.dateto =  this.$function.formatDate(new Date().toLocaleDateString('en-CA'))
-      
-     
-
+        this.isonWeb = await this.$function.isWeb()
         await this.initialize()
         this.user_device = await this.$function.getDeviceInfo()
         if(!this.user_location){
@@ -151,7 +216,10 @@ export default {
             }
             let attlogs = await this.$function.getAttlogs()
             if(attlogs[0] == null){ attlogs.shift(); }
-
+            if(attlogs > 350){ 
+                let diff = attlogs.length - 350
+                attlogs.splice(0, diff)
+            }
             if(attlogs.length == 0){
                 await this.getLogs()
             }else{
@@ -188,7 +256,7 @@ export default {
             let res = await this.$api.masterselect({
                 table_name: 'user_loc_view',
                 having: {
-                    username: this.session_user.username
+                    userID: this.session_user.ID
                 }
             })
             if(res.length > 0){
@@ -222,12 +290,44 @@ export default {
                     this.$function.showAlert({header: 'Warning', message: 'You are not within the allowed locations.'})
                     return await loading.dismiss();
                 }
-                let photo = await this.openCamera()
-                if(!photo.status){
-                    this.$function.showAlert({header: 'Warning', message: 'Image captured failed'})
-                    return await loading.dismiss();
-                }
+                let photo = {}
+                
+                if(this.session_user.imageCapture == 1){
+                    let loadingDiv = document.querySelector('ion-loading');
+                    loadingDiv.classList.add('hide_loader');
+                    if(this.isonWeb){
+                        this.webCapturing = true;
+                        await new Promise(resolve => {
+                        const handler = () => {
+                            document.removeEventListener('imageCaptured', handler);
+                            resolve();
+                        };
+                    
+                        document.addEventListener('imageCaptured', handler);
+                        loadingDiv.classList.add('hide_loader');
+                            this.startCamera()
+                        });
+                    
+                        photo = {
+                            status: true,
+                            base64String: this.webImage
+                        }
+                        loadingDiv.classList.remove('hide_loader');
 
+                    } else {
+                        photo = await this.openCamera()
+                        if(!photo.status){
+                            this.$function.showAlert({header: 'Warning', message: 'Image captured failed'})
+                            return await loading.dismiss();
+                        }
+                    }
+                }else{
+                    photo = {
+                        status: true,
+                        base64String: 'NO IMAGE'
+                    }
+                }
+               
 
                 let data_log = {}
                 data_log.id = this.$function.generateUniqueId()
@@ -250,19 +350,25 @@ export default {
                     let config = {
                         path_folder: 'uploads/spott/images/' + this.session_user.username,
                         max_size: 15000,
-                        base64data: photo.base64String.replace('data:image/jpeg;base64,', '')
+                        base64data: photo.base64String.replace(/data:image\/(jpeg|png);base64,/, '')
                     }
-                    let upload = await this.$api.fileUpload(config)
-                    if(upload.status == true){
-                        data_log.picture = "UPLOADED"
-                        data_log.fileName = upload.file_name
-                        data_log.pathName = upload.file_path
+                    if(this.session_user.imageCapture == 1){
+                        let upload = await this.$api.fileUpload(config)
+                        if(upload.status == true){
+                            data_log.picture = "UPLOADED"
+                            data_log.fileName = upload.file_name
+                            data_log.pathName = upload.file_path
+                        }
                     }
+                   
                     if(this.session_user.isOffline != '1'){
-                        // save to server
+                        let res = await this.savetoserver(data_log)
+                        if(res.error == 0){
+                            data_log.upload_status = 1
+                            data_log.uploaded_on = new Date()
+                        }
                     }
                 }
-                 
                 await this.localSaveAttlogs(data_log)
                 await loading.dismiss();
 
@@ -340,11 +446,6 @@ export default {
                 console.log(error)
             }
         },
-
-
-
-
-
         async openCamera(){
             let data = {
                 status: false,
@@ -369,6 +470,22 @@ export default {
             
             return data
         },
+        viewLogs(data){
+            this.viewLog.canDismiss = false
+            this.viewLog.data = data
+            this.viewLog.remark = data.trxIN.remark
+            const button = document.getElementById('open-custom-dialog');
+            if (button) {
+                button.click();
+            }
+        },
+        closeModal(){
+        this.viewLog.canDismiss = true
+        this.$refs.modal1.$el.dismiss();
+        this.viewLog.inputrem = false
+        this.viewLog.remark = ''
+        
+        },
         checkIfWithinLocation(long,lat){
             if(this.session_user.geoFence == '0' || this.session_user.disableLocation == '1'){
                 return true
@@ -386,10 +503,10 @@ export default {
             this.datepick.canDismiss = false
             if(data == 1){
                 this.datepick.type = 1
-                this.datepick.model = this.display.datefrom
+                this.datepick.model = this.current.datefrom
             }else if(data == 2){
                 this.datepick.type = 2
-                this.datepick.model = this.display.dateto
+                this.datepick.model = this.current.dateto
             }
             const datebtn = document.getElementById('open-date');
             if (datebtn) {
@@ -407,6 +524,60 @@ export default {
             }
             this.$refs.modal.$el.dismiss();
         },
+
+        async startCamera() {
+            this.webImage = null
+            try {
+                this.stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                this.$refs.video.srcObject = this.stream;
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+            }
+        },
+        captureImage() {
+            if (this.$refs.video.srcObject) {
+                const canvas = this.$refs.canvas;
+                const context = canvas.getContext('2d');
+                context.drawImage(this.$refs.video, 0, 0, canvas.width, canvas.height);
+                this.webImage = canvas.toDataURL('image/png');
+            }
+        },
+        retakeImage(){
+            this.webImage = null
+            if (this.stream) {
+                const tracks = this.stream.getTracks();
+                tracks.forEach(track => track.stop());
+                // this.$refs.video.srcObject = null;
+                this.stream = null;
+            }
+            this.startCamera()
+            this.$forceUpdate()
+        },
+        saveCapture() {
+            const event = new CustomEvent('imageCaptured');
+            document.dispatchEvent(event);
+            this.stopCamera()
+            this.webCapturing = false
+        },
+            stopCamera() {
+            if (this.stream) {
+                const tracks = this.stream.getTracks();
+                tracks.forEach(track => track.stop());
+                // this.$refs.video.srcObject = null;
+                this.stream = null;
+                this.webCapturing = false
+            }
+        },
+        formattedTime(time) {
+            let [hours, minutes, seconds] = time.split(':');
+            let date = new Date();
+            date.setHours(hours);
+            date.setMinutes(minutes);
+            date.setSeconds(seconds);
+    
+            return date.toLocaleTimeString(); 
+        },
+
     },
     computed: {
         btnvalid(){
@@ -462,6 +633,11 @@ export default {
                 setTimeout(() => {
                     this.background_count++
                 }, 10000);
+                if(this.session_user.isOffline != 1){
+                    if(this.attlogs.filter(e => e.upload_status != '1').length > 0){
+                        this.transferlogs()
+                    }
+                }
             }
         },
         attlogs: {
@@ -521,4 +697,11 @@ ion-modal#example-modal {
     width: 90vw !important;
   }
 
+</style>
+
+<style>
+.hide_loader{
+    position: relative !important;
+    z-index: 10 !important;
+}
 </style>

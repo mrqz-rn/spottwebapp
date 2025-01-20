@@ -60,6 +60,9 @@ export default {
     },
     async created(){
         this.session_user = await this.$function.getUser();
+        if(!this.session_user){
+            this.$router.push('/')
+        }
         this.session_loc = await this.$function.UserLocation();
         let loc =  this.session_loc ? this.session_loc.split(",") : [];
             let locs = [];
@@ -76,7 +79,6 @@ export default {
     },
     methods:{
         async startCalibrate(){
-            
             const loading = await loadingController.create({ message: 'Calibrating...', translucent: true });
             await loading.present();
             try {
@@ -110,6 +112,54 @@ export default {
                 console.log(error)
                 this.$function.showAlert({header: 'Warning', message: error})
                 await loading.dismiss();
+            }
+        },
+        async uploadLocation(){
+            const loading = await loadingController.create({ message: 'Uploading location...', translucent: true });
+            await loading.present();
+            let long = 0;
+            let lat = 0;
+            this.calibrate.forEach(e => {
+                long += parseFloat(e.longitude);
+                lat += parseFloat(e.latitude);
+            });
+            let data = {
+                long: (long / 5).toFixed(4),
+                lat: (lat / 5).toFixed(4),
+                radius: this.Locations[this.Locations.length - 1].radius
+            };
+            if (this.Locations.some(e => e.lat == data.lat && e.long == data.long)) {
+                await loading.dismiss();
+                this.calibrate = [];
+                return this.$function.showAlert({header: 'Notice', message: 'Location already exists.', buttons: ['Okay'], })
+            }
+
+            let res = await this.$api.savedata({
+                tableName: 'allowed_location',
+                fields: {
+                    userID: this.session_user.ID,
+                    latitude: data.lat,
+                    longitude: data.long
+                },
+                key: ['userID', 'latitude', 'longitude']
+            })
+            if (res.result == true && res.error == 0) {
+                await loading.dismiss();
+                this.$function.showAlert({header: 'Success', message: 'Location saved successfully.', buttons: ['Okay'], })
+                this.Locations.push(data);
+                this.calibrate = [];
+                let location_str = ''
+                let location_arr = []
+                this.Locations.forEach(locs => {
+                    location_arr.push(locs.long + ":" + locs.lat + ":" + locs.radius)
+                });
+                location_str = location_arr.join(',')
+                await this.$storage.setItem('session-location', (location_str)); 
+                this.$forceUpdate();
+                console.log(this.Locations)
+            }else{
+                await loading.dismiss();
+                this.$function.showAlert({header: 'Warning', message: 'Something went wrong. Please try again later.', buttons: ['Okay'], })
             }
         },
         async fetchAddress() {

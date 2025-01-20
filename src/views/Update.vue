@@ -4,6 +4,7 @@
             <div style="position: absolute; top: 50%; transform: translateY(-50%); width: 80vw;">
                 <img class="d-flex pb-5" style="height: 15vh; margin: auto;" src="/new.png"/>
                 <h3 class="d-flex justify-center pb-2" style="color: white;">New Version Available</h3>
+                <i class="d-flex justify-center pb-2" style="color: white;">SPOTT {{ app_config.version }}</i>
                 <p class="pb-7" style="text-align: center; color: #BDBDBD;">Please download and install the new version to access our latest features</p>
                 <ion-button @click="updateNow()" class="mb-2" expand="full" color="primary" shape="round">Update Now</ion-button>
                 <ion-button @click="later()" expand="full" color="medium" shape="round">Close the app</ion-button>
@@ -21,13 +22,15 @@ export default {
     components: { IonPage, IonButton },
     data() {
         return {
-            // app: this.$store.state.app,
+            app_config: {}
         }
+    },
+    async created() {
+        this.app_config = await this.$function.getAppConfig()
     },
     methods: {
         async updateNow() {
-            let config = await this.$function.getAppConfig
-            await Browser.open({ url: config.apilink });
+            await Browser.open({ url: app_config.apilink });
         },
         later(){
             navigator['app'].exitApp();

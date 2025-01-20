@@ -130,7 +130,14 @@ const MyFunctions = {
           return {};
         }
       },
-
+      async isWeb(){
+        const deviceInfo = await Device.getInfo();
+        if(!['android', 'ios'].includes(deviceInfo.platform)){
+          return true
+        }else{
+          return false
+        }
+      },
       async validateSettings(){
         let res = {status: true, message: 'Success'}
         try {
