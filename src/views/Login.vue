@@ -1,6 +1,6 @@
 <template>
   <ion-page class="backdrop">
-      <IonLabel style="color: white; font-size: 13px;" class="pa-2"> Version: 1.2 4</IonLabel>
+      <IonLabel style="color: white; font-size: 13px;" class="pa-2"> Version: 1.3</IonLabel>
         <div id="container" class="pa-6" style="margin-top: -10%">
           <div>
             <img style="height: 15vh; margin: auto;" src="/icon.png"/>
