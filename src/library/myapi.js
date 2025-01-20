@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { CapacitorHttp } from '@capacitor/core';
 
-// const API_URL = 'https://ronmarquez.serv00.net/spott-api';
-// const DB_NAME = 'm10857_spottv2';
-const API_URL = 'http://localhost/spott-api';
-const DB_NAME = 'spottv2';
+const API_URL = 'https://ronmarquez.serv00.net/spott-api';
+const DB_NAME = 'm10857_spottv2';
+// const API_URL = 'http://localhost/spott-api';
+// const DB_NAME = 'spottv2';
 const API_TOKEN = 'U1BPVFRUT0tFTg=='
 
 
