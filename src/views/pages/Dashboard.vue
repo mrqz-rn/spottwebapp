@@ -254,9 +254,10 @@ export default {
         async fetchUserLocations(){
             let location = []
             let res = await this.$api.masterselect({
-                table_name: 'user_loc_view',
+                table_name: 'allowed_location',
                 having: {
-                    userID: this.session_user.ID
+                    userID: this.session_user.ID,
+                    status: 1
                 }
             })
             if(res.length > 0){
