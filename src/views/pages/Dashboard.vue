@@ -216,8 +216,8 @@ export default {
             await this.$storage.setItem('session-attlogs', (res))
         },
         async initialize(){
-            this.session_user = await this.$function.getUser()
-            alert(JSON.stringify(this.session_user))
+            try {
+                this.session_user = await this.$function.getUser()
             if(!this.session_user){
                 this.$router.push('/')
             }
@@ -235,7 +235,6 @@ export default {
             // alert(attlogs.length)
             this.attlogs = await this.$function.getAttlogs()
             this.user_location = await this.$function.UserLocation()
-            alert(this.user_location)
             this.snackbar.status = true
             this.snackbar.type = 'info'
             this.snackbar.message = 'Initializing location...'
@@ -259,6 +258,10 @@ export default {
                 this.background_count++
                 this.$forceUpdate()
             }, 2500)
+            } catch (error) {
+                alert(error)
+            }
+           
         },
         getTimeDate(){
             const now = new Date();
