@@ -121,6 +121,7 @@
 </template>
 
 <script>
+import { Geolocation } from '@capacitor/geolocation';
 import { IonPage,IonToast,IonContent,IonCard,IonCardTitle,IonCardContent,IonLabel,IonInput,
     IonButton,IonSpinner,IonList,IonModal,IonTextarea,IonItem,IonIcon,IonDatetime,loadingController
 } from '@ionic/vue';
@@ -182,6 +183,13 @@ export default {
     },
     async created(){
         await this.initialize()
+        const data = await Geolocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 8000,            
+            maximumAge: Infinity
+          });
+          alert(data)
+
     },
     async mounted(){
         const date = new Date();
