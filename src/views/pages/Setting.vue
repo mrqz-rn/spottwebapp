@@ -109,7 +109,7 @@ export default {
                 await loading.dismiss();
 
             } catch (error) {
-                console.log(error)
+                alert(error)
                 this.$function.showAlert({header: 'Warning', message: error})
                 await loading.dismiss();
             }
