@@ -24,11 +24,15 @@ export default {
             // alert(loc.state);
             
             setInterval(async () => {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    this.location = position.coords
-                    console.log(position.coords)
-                    this.$forceUpdate()
-                })
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject)
+                );
+                this.location = {
+                    status: true,
+                    message: 'Success',
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
 
 
             }, 1500);
