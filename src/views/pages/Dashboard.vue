@@ -217,10 +217,12 @@ export default {
         },
         async initialize(){
             this.session_user = await this.$function.getUser()
+            alert(this.session_user)
             if(!this.session_user){
                 this.$router.push('/')
             }
             let attlogs = await this.$function.getAttlogs()
+            alert(attlogs.length + '  : ')
             if(attlogs[0] == null){ attlogs.shift(); }
             if(attlogs > 350){ 
                 let diff = attlogs.length - 350
@@ -232,8 +234,10 @@ export default {
                 attlogs.filter(e => e.trxdate >= this.current.datefrom)
                 this.$storage.setItem('session-attlogs', (attlogs))
             }
+            alert(attlogs.length)
             this.attlogs = await this.$function.getAttlogs()
             this.user_location = await this.$function.UserLocation()
+            alert(this.user_location)
             this.snackbar.status = true
             this.snackbar.type = 'info'
             this.snackbar.message = 'Initializing location...'
