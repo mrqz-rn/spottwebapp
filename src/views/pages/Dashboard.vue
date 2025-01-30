@@ -182,7 +182,11 @@ export default {
         }, 1000);
     },
     async created(){
-        await this.initialize()
+        const position = await new Promise((resolve, reject) =>
+            navigator.geolocation.getCurrentPosition(resolve, reject)
+          );
+          alert(position.coords.latitude + " " + position.coords.longitude)
+        // await this.initialize()
 
     },
     async mounted(){
