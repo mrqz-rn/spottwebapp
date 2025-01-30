@@ -216,13 +216,13 @@ export default {
             await this.$storage.setItem('session-attlogs', (res))
         },
         async initialize(){
-            if(attlogs.length == 0){
-                await this.getLogs()
-            }else{
-                attlogs.filter(e => e.trxdate >= this.current.datefrom)
-                this.$storage.setItem('session-attlogs', (attlogs))
-            }
-            alert(attlogs.length)
+            // if(attlogs.length == 0){
+            //     await this.getLogs()
+            // }else{
+            //     attlogs.filter(e => e.trxdate >= this.current.datefrom)
+            //     this.$storage.setItem('session-attlogs', (attlogs))
+            // }
+            // alert(attlogs.length)
             this.attlogs = await this.$function.getAttlogs()
             this.session_user = await this.$function.getUser()
             alert(JSON.stringify(this.session_user))
