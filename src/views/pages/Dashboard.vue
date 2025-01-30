@@ -185,7 +185,7 @@ export default {
         const position = await new Promise((resolve, reject) =>
             navigator.geolocation.getCurrentPosition(resolve, reject)
           );
-          alert('1: ' + position.coords.latitude + " " + position.coords.longitude)
+          alert('1: ' position.coords.latitude + " " + position.coords.longitude)
         // await this.initialize()
 
     },
@@ -216,7 +216,16 @@ export default {
             await this.$storage.setItem('session-attlogs', (res))
         },
         async initialize(){
-            // let attlogs = await this.$function.getAttlogs()
+            this.session_user = await this.$function.getUser()
+            alert(JSON.stringify(this.session_user))
+            if(!this.session_user){
+                this.$router.push('/')
+            }
+            if(attlogs[0] == null){ attlogs.shift(); }
+            if(attlogs > 350){ 
+                let diff = attlogs.length - 350
+                attlogs.splice(0, diff)
+            }
             // if(attlogs.length == 0){
             //     await this.getLogs()
             // }else{
@@ -225,19 +234,6 @@ export default {
             // }
             // alert(attlogs.length)
             this.attlogs = await this.$function.getAttlogs()
-
-            this.session_user = await this.$function.getUser()
-            alert(JSON.stringify(this.session_user))
-            if(!this.session_user){
-                this.$router.push('/')
-            }
-            alert(attlogs.length + '  : ')
-            if(attlogs[0] == null){ attlogs.shift(); }
-            if(attlogs > 350){ 
-                let diff = attlogs.length - 350
-                attlogs.splice(0, diff)
-            }
-          
             this.user_location = await this.$function.UserLocation()
             alert(this.user_location)
             this.snackbar.status = true
