@@ -66,6 +66,7 @@ const MyFunctions = {
             longitude: data.coords.longitude
           }
         }catch(err){
+          alert(err)
           result = {status: false, message: 'Cannot get location'}
         }
         return result
