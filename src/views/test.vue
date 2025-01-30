@@ -1,7 +1,7 @@
 <template>
 <div>
     <IonCard class="pa-4 ma-4 mx-2" color="dark" style="border-radius: 25px;" >
-        {{ JSON.stringify(location) }}
+        {{ (location.longitude) }} : {{ (location.latitude) }}
     </IonCard>
 </div>
 </template>
@@ -25,7 +25,9 @@ export default {
             
             setInterval(async () => {
                 navigator.geolocation.getCurrentPosition((position) => {
-                    this.location = position
+                    this.location = position.coords
+                    console.log(position.coords)
+                    this.$forceUpdate()
                 })
 
 
