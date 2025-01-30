@@ -1,7 +1,7 @@
 <template>
 <div>
     <IonCard class="pa-4 ma-4 mx-2" color="dark" style="border-radius: 25px;" >
-        {{ location }}
+        {{ JSON.stringify(location) }}
     </IonCard>
 </div>
 </template>
