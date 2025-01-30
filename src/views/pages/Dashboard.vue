@@ -185,7 +185,6 @@ export default {
         const position = await new Promise((resolve, reject) =>
             navigator.geolocation.getCurrentPosition(resolve, reject)
           );
-          alert('1: ' + position.coords.latitude + " " + position.coords.longitude)
         // await this.initialize()
 
     },
