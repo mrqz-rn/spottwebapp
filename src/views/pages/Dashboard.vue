@@ -231,7 +231,13 @@ export default {
             this.snackbar.status = true
             this.snackbar.type = 'info'
             this.snackbar.message = 'Initializing location...'
-            let location = await this.$function.getLocation()
+            let location = {}
+            try {
+                location = await this.$function.getLocation()
+            } catch (error) {
+                alert(error)
+            }
+             
             if(location.status == true){
                 this.snackbar.type = 'success'
                 this.snackbar.message = 'Location established'
