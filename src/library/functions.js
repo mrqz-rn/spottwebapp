@@ -53,21 +53,33 @@ const MyFunctions = {
       },
       async getLocation(){
         let result = {}
-        try{
-          const data = await Geolocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 8000,            
-            maximumAge: Infinity
-          });
-          result = {
-            status: true,
-            message: 'Success',
-            latitude: data.coords.latitude,
-            longitude: data.coords.longitude
+        const deviceInfo = await Device.getInfo();
+        if(!['android', 'ios'].includes(deviceInfo.platform)){
+          navigator.geolocation.getCurrentPosition((position) => {
+              result = {
+                status: true,
+                message: 'Success',
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              }
+              this.$forceUpdate()
+          })
+        }else{
+          try{
+            const data = await Geolocation.getCurrentPosition({
+              enableHighAccuracy: true,
+              timeout: 8000,            
+              maximumAge: Infinity
+            });
+            result = {
+              status: true,
+              message: 'Success',
+              latitude: data.coords.latitude,
+              longitude: data.coords.longitude
+            }
+          }catch(err){
+            result = {status: false, message: 'Cannot get location'}
           }
-        }catch(err){
-          alert(err)
-          result = {status: false, message: 'Cannot get location'}
         }
         return result
       },
