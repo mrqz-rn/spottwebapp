@@ -24,7 +24,11 @@ export default {
             // alert(loc.state);
             
             setInterval(async () => {
-                this.location = await navigator.geolocation.getCurrentPosition(position => position)
+                navigator.geolocation.getCurrentPosition((position) => {
+                    this.location = position
+                })
+
+
             }, 1500);
         } catch (error) {
             alert(error);
