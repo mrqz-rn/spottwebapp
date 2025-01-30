@@ -90,10 +90,10 @@ export default {
                     this.$function.showAlert({header: 'Warning', message: 'Please connect to internet'})
                     return await loading.dismiss();
                 }
-                if(!hasdata){
-                    this.$function.showAlert({header: 'Warning', message: 'Please check your interenet/data connection'})
-                    return await loading.dismiss();
-                }
+                // if(!hasdata){
+                //     this.$function.showAlert({header: 'Warning', message: 'Please check your interenet/data connection'})
+                //     return await loading.dismiss();
+                // }
                 if(res.status == false){
                     this.$function.showAlert({header: 'Warning', message: res.message})
                     return await loading.dismiss();
