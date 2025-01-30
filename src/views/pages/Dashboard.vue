@@ -185,7 +185,7 @@ export default {
         const position = await new Promise((resolve, reject) =>
             navigator.geolocation.getCurrentPosition(resolve, reject)
           );
-          alert(position.coords.latitude + " " + position.coords.longitude)
+          alert('1: ' + position.coords.latitude + " " + position.coords.longitude)
         // await this.initialize()
 
     },
@@ -217,7 +217,7 @@ export default {
         },
         async initialize(){
             this.session_user = await this.$function.getUser()
-            alert(this.session_user)
+            alert(JSON.stringify(this.session_user))
             if(!this.session_user){
                 this.$router.push('/')
             }
@@ -228,13 +228,13 @@ export default {
                 let diff = attlogs.length - 350
                 attlogs.splice(0, diff)
             }
-            if(attlogs.length == 0){
-                await this.getLogs()
-            }else{
-                attlogs.filter(e => e.trxdate >= this.current.datefrom)
-                this.$storage.setItem('session-attlogs', (attlogs))
-            }
-            alert(attlogs.length)
+            // if(attlogs.length == 0){
+            //     await this.getLogs()
+            // }else{
+            //     attlogs.filter(e => e.trxdate >= this.current.datefrom)
+            //     this.$storage.setItem('session-attlogs', (attlogs))
+            // }
+            // alert(attlogs.length)
             this.attlogs = await this.$function.getAttlogs()
             this.user_location = await this.$function.UserLocation()
             alert(this.user_location)
