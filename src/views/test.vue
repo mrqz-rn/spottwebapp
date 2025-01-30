@@ -19,10 +19,16 @@ export default {
         }
     },
     created(){
-        navigator.permissions.query({name: "geolocation"})
-        setInterval(() => {
-            navigator.geolocation.getCurrentPosition((geo) => this.location = geo, (error) => console.log(error))
-        }, 1500);
+        try {
+            navigator.permissions.query({name: "geolocation"})
+            setInterval(() => {
+                navigator.geolocation.getCurrentPosition((geo) => this.location = geo, (error) => console.log(error))
+            }, 1500);
+        } catch (error) {
+            alert(error)
+        }
+
+        
     }
 }
 </script>
