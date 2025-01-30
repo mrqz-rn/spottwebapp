@@ -181,7 +181,7 @@ export default {
         }, 1000);
     },
     async created(){
-      
+        await this.initialize()
     },
     async mounted(){
         const date = new Date();
@@ -260,6 +260,7 @@ export default {
                     status: 1
                 }
             })
+            alert('location fetch')
             if(res.length > 0){
                 res.forEach(locs => {
                     location.push(locs.longitude + ":" + locs.latitude + ":" + locs.radius)
@@ -630,7 +631,9 @@ export default {
         async background_count() {
             if (this.background_count > 0) {
                 let location = await this.$function.getLocation()
-                if(location.status == true){ this.location_bk = location }
+                if(location.status == true){ 
+                    this.location_bk = location 
+                }
                 setTimeout(() => {
                     this.background_count++
                 }, 10000);
