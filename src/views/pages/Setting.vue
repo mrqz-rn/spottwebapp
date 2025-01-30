@@ -84,7 +84,7 @@ export default {
             try {
                 await this.$function.checkperms()
                 let net = await this.$function.getNet()
-                let hasdata = await this.$function.checknet()
+                // let hasdata = await this.$function.checknet()
                 let res = await this.$function.validateSettings()
                 if(!net.connected){
                     this.$function.showAlert({header: 'Warning', message: 'Please connect to internet'})
@@ -98,12 +98,20 @@ export default {
                     this.$function.showAlert({header: 'Warning', message: res.message})
                     return await loading.dismiss();
                 }
-                const coords = async () => {
-                    const coords = await this.$function.getLocation()
-                    return coords
+                let loc = {}
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject)
+                );
+                loc = {
+                    status: true,
+                    message: 'Success',
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
                 }
+              
+                const coords = loc
                 do {
-                    this.calibrate.push(await coords());
+                    this.calibrate.push(coords);
                 } while (this.calibrate.length < 5);
                 this.$function.showAlert({header: 'Success', message: 'Location captured successfully. Please proceed to uploading'})
                 await loading.dismiss();
