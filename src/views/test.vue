@@ -20,8 +20,8 @@ export default {
     },
     async created() {
         try {
-            let loc = await navigator.permissions.query({ name: "geolocation" });
-            alert(loc.state);
+            // let loc = await navigator.permissions.query({ name: "geolocation" });
+            // alert(loc.state);
 
             setInterval(() => {
                 navigator.geolocation.getCurrentPosition(
