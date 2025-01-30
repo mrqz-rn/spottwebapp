@@ -18,18 +18,21 @@ export default {
             location: {}
         }
     },
-    async created(){
+    async created() {
         try {
-            let loc = await navigator.permissions.query({name: "geolocation"}) 
-            alert(loc.state)
-            setInterval(async () => {
-                await navigator.geolocation.getCurrentPosition((geo) => this.location = geo, (error) => console.log(error))
+            let loc = await navigator.permissions.query({ name: "geolocation" });
+            alert(loc.state);
+
+            setInterval(() => {
+                navigator.geolocation.getCurrentPosition(
+                    (geo) => (this.location = geo),
+                    (error) => console.log(error)
+                );
             }, 1500);
         } catch (error) {
-            alert(error)
+            alert(error);
         }
-
-        
     }
+
 }
 </script>
