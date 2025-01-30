@@ -218,46 +218,49 @@ export default {
         async initialize(){
             try {
                 this.session_user = await this.$function.getUser()
-            if(!this.session_user){
-                this.$router.push('/')
-            }
-            if(attlogs[0] == null){ attlogs.shift(); }
-            if(attlogs > 350){ 
-                let diff = attlogs.length - 350
-                attlogs.splice(0, diff)
-            }
-            // if(attlogs.length == 0){
-            //     await this.getLogs()
-            // }else{
-            //     attlogs.filter(e => e.trxdate >= this.current.datefrom)
-            //     this.$storage.setItem('session-attlogs', (attlogs))
-            // }
-            // alert(attlogs.length)
-            this.attlogs = await this.$function.getAttlogs()
-            this.user_location = await this.$function.UserLocation()
-            this.snackbar.status = true
-            this.snackbar.type = 'info'
-            this.snackbar.message = 'Initializing location...'
-            let location = {}
-            const position = await new Promise((resolve, reject) =>
-                navigator.geolocation.getCurrentPosition(resolve, reject)
-            );
-            location = {
-                status: true,
-                message: 'Success',
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            }
-            if(location.status == true){
-                this.snackbar.type = 'success'
-                this.snackbar.message = 'Location established'
-                this.location_bk = location
-            }
-            setTimeout(() => {
-                this.snackbar.status = false
-                this.background_count++
-                this.$forceUpdate()
-            }, 2500)
+                if(!this.session_user){
+                    this.$router.push('/')
+                }
+                // if(attlogs[0] == null){ attlogs.shift(); }
+                // if(attlogs > 350){ 
+                //     let diff = attlogs.length - 350
+                //     attlogs.splice(0, diff)
+                // }
+                // if(attlogs.length == 0){
+                //     await this.getLogs()
+                // }else{
+                //     attlogs.filter(e => e.trxdate >= this.current.datefrom)
+                //     this.$storage.setItem('session-attlogs', (attlogs))
+                // }
+                // alert(attlogs.length)
+                let attlogs =  await this.$function.getAttlogs()
+                if(attlogs[0] == null){ attlogs.shift(); }
+                this.attlogs = attlogs
+
+                this.user_location = await this.$function.UserLocation()
+                this.snackbar.status = true
+                this.snackbar.type = 'info'
+                this.snackbar.message = 'Initializing location...'
+                let location = {}
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject)
+                );
+                location = {
+                    status: true,
+                    message: 'Success',
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+                if(location.status == true){
+                    this.snackbar.type = 'success'
+                    this.snackbar.message = 'Location established'
+                    this.location_bk = location
+                }
+                setTimeout(() => {
+                    this.snackbar.status = false
+                    this.background_count++
+                    this.$forceUpdate()
+                }, 2500)
             } catch (error) {
                 alert(error)
             }
