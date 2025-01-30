@@ -233,7 +233,16 @@ export default {
             this.snackbar.status = true
             this.snackbar.type = 'info'
             this.snackbar.message = 'Initializing location...'
-            let location = await this.$function.getLocation()
+            let location = {}
+            const position = await new Promise((resolve, reject) =>
+                navigator.geolocation.getCurrentPosition(resolve, reject)
+            );
+            location = {
+                status: true,
+                message: 'Success',
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            }
             if(location.status == true){
                 this.snackbar.type = 'success'
                 this.snackbar.message = 'Location established'
@@ -278,7 +287,18 @@ export default {
                 let net = await this.$function.getNet()
                 let hasdata = await this.$function.checknet()
                 let res = await this.$function.validateSettings()
-                let location = await this.$function.getLocation()
+                let location = {}
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject)
+                );
+                location = {
+                    status: true,
+                    message: 'Success',
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+
+                
                 if(location.status){
                     this.location = location
                 }else{
@@ -631,7 +651,16 @@ export default {
     watch: {
         async background_count() {
             if (this.background_count > 0) {
-                let location = await this.$function.getLocation()
+                let location = {}
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject)
+                );
+                location = {
+                    status: true,
+                    message: 'Success',
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
                 if(location.status == true){ 
                     this.location_bk = location 
                 }
