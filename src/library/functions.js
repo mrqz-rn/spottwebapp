@@ -54,16 +54,19 @@ const MyFunctions = {
       async getLocation(){
         let result = {}
         const deviceInfo = await Device.getInfo();
+     
         if(!['android', 'ios'].includes(deviceInfo.platform)){
-          navigator.geolocation.getCurrentPosition((position) => {
-              result = {
-                status: true,
-                message: 'Success',
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-              }
-              this.$forceUpdate()
-          })
+          const position = await new Promise((resolve, reject) =>
+            navigator.geolocation.getCurrentPosition(resolve, reject)
+          );
+          result = {
+            status: true,
+            message: 'Success',
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }
+
+
         }else{
           try{
             const data = await Geolocation.getCurrentPosition({

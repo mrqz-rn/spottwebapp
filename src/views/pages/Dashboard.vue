@@ -183,12 +183,6 @@ export default {
     },
     async created(){
         await this.initialize()
-        const data = await Geolocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 8000,            
-            maximumAge: Infinity
-          });
-          alert(data)
 
     },
     async mounted(){
@@ -268,7 +262,6 @@ export default {
                     status: 1
                 }
             })
-            alert('location fetch')
             if(res.length > 0){
                 res.forEach(locs => {
                     location.push(locs.longitude + ":" + locs.latitude + ":" + locs.radius)
