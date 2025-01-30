@@ -22,12 +22,9 @@ export default {
         try {
             // let loc = await navigator.permissions.query({ name: "geolocation" });
             // alert(loc.state);
-
-            setInterval(() => {
-                navigator.geolocation.getCurrentPosition(
-                    (geo) => (this.location = geo),
-                    (error) => console.log(error)
-                );
+            
+            setInterval(async () => {
+                this.location = await navigator.geolocation.getCurrentPosition(position => position)
             }, 1500);
         } catch (error) {
             alert(error);
