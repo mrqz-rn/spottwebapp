@@ -19,10 +19,12 @@ export default {
         }
     },
     async created() {
+        let hasdata = await this.$function.checknet()
+        console.log('test: ' + hasdata)
         try {
             // let loc = await navigator.permissions.query({ name: "geolocation" });
             // alert(loc.state);
-            
+           
             setInterval(async () => {
                 const position = await new Promise((resolve, reject) =>
                     navigator.geolocation.getCurrentPosition(resolve, reject)
