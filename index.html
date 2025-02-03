@@ -3,29 +3,65 @@
   <head>
     <meta charset="utf-8" />
     <title>SPOTT APP</title>
-
     <base href="/" />
 
-    <meta name="color-scheme" content="light dark" />
+    <!-- SEO Meta Tags -->
     <meta
-      name="viewport"
-      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="description"
+      content="SPOTT APP is your go-to solution for [insert purpose of the app]. Discover features, benefits, and more."
     />
+    <link rel="canonical" href="https://spottwebapp.vercel.app/" />
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="SPOTT APP" />
+    <meta property="og:description" content="SPOTT APP is your go-to solution for [insert purpose of the app]." />
+    <meta property="og:image" content="https://spottwebapp.vercel.app/" />
+    <meta property="og:url" content="https://spottwebapp.vercel.app/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="SPOTT APP" />
+    <meta name="twitter:description" content="SPOTT APP is your go-to solution for [insert purpose of the app]." />
+    <meta name="twitter:image" content="https://yourdomain.com/icon.png" />
+
+    <!-- Viewport and Other Meta Tags -->
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="color-scheme" content="light dark" />
 
+    <!-- Favicons -->
     <link rel="shortcut icon" type="image/png" href="/icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- add to homescreen for ios -->
-    <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
+    <!-- iOS Meta Tags -->
     <meta name="apple-mobile-web-app-title" content="SPOTT APP" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SPOTT APP",
+      "description": "SPOTT APP is your go-to solution for [insert purpose of the app].",
+      "operatingSystem": "Android, iOS",
+      "applicationCategory": "Productivity",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
 
   <body>
-    <div id="app"></div>
+    <a href="#app" class="skip-link">Skip to main content</a>
+    <div id="app" role="main"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
-
 </html>
-
