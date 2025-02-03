@@ -15,14 +15,19 @@ const MyFunctions = {
     app.config.globalProperties.$function = {
       async checknet(){
         try {
-          let data = await axios.get('https://www.cloudflare.com/');
-          console.log(data)
-          // console.log('Internet connection is available.');
-          return true
+          let data = await fetch('https://www.cloudflare.com/')
+          if(data.status == 200){
+            return true
+          }else{
+            return false
+          }
         } catch (error) {
-          // console.log('Internet connection is not available.');
+          console.log(error)
           return false
         }
+      
+
+        
       },
       async getNet(){
         return await Network.getStatus();
