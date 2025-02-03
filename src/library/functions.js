@@ -15,7 +15,7 @@ const MyFunctions = {
     app.config.globalProperties.$function = {
       async checknet(){
         try {
-          let data = await fetch('https://www.cloudflare.com/')
+          let data = await fetch('https://httpbin.org/get')
           if(data.status == 200){
             return true
           }else{
