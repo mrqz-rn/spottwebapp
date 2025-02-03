@@ -15,7 +15,7 @@ const MyFunctions = {
     app.config.globalProperties.$function = {
       async checknet(){
         try {
-          await axios.get('https://www.google.com/generate_204');
+          await axios.get('https://example.com/');
           // console.log('Internet connection is available.');
           return true
         } catch (error) {

@@ -749,4 +749,9 @@ ion-modal#example-modal {
     position: relative !important;
     z-index: 10 !important;
 }
+/* .dateInput label{
+    border: 1px solid;
+    border-radius: 5px !important;
+    padding: 0px 8px !important;
+} */
 </style>
